@@ -3,15 +3,17 @@
 </template>
 
 <script>
+import { WALL, EMPTY } from "../constants";
+
 export default {
   props: ["value", "toRemove"],
   computed: {
     className() {
       return {
         [`color-${this.value}`]: true,
-        filled: this.value != " ",
+        filled: this.value != EMPTY,
         animated: this.value === "T",
-        "to-remove": this.toRemove
+        "to-remove": this.toRemove && this.value !== WALL
       };
     },
     rotation() {
@@ -28,7 +30,6 @@ export default {
 .cell {
   width: 20px;
   height: 20px;
-  border: 1px solid;
   box-sizing: border-box;
 }
 
@@ -37,9 +38,6 @@ export default {
     -2px -2px 0 0 rgba(0, 0, 0, 0.4) inset;
 }
 
-.color-0 {
-  background: #000;
-}
 .color-I {
   background: #f00;
 }
@@ -60,6 +58,10 @@ export default {
 }
 .color-Z {
   background: #ff0;
+}
+
+.color-wall {
+  background: #ddd;
 }
 
 .animated {

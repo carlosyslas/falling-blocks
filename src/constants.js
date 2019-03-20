@@ -45,6 +45,7 @@ export const BLOCK = {
 };
 
 export const EMPTY = " ";
+export const WALL = "wall";
 
 export const BLOCK_SIZE = {
   width: 4,
