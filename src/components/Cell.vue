@@ -39,25 +39,25 @@ export default {
 }
 
 .color-I {
-  background: #f00;
+  background: #556270;
 }
 .color-O {
-  background: #0f0;
+  background: #4ecdc4;
 }
 .color-T {
-  background: #08f;
+  background: #ff6b6b;
 }
 .color-J {
-  background: rgb(48, 209, 169);
+  background: #c7f464;
 }
 .color-L {
-  background: #0ff;
+  background: #c44d58;
 }
 .color-S {
-  background: #f0f;
+  background: #98c1d9;
 }
 .color-Z {
-  background: #ff0;
+  background: #ffd670;
 }
 
 .color-wall {
