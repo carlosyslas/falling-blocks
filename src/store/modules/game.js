@@ -10,7 +10,7 @@ const state = {
   grid: Array.from(Array(GRID_SIZE.height)).map(() =>
     Array.from(Array(GRID_SIZE.width)).map(() => EMPTY)
   ),
-  rowsToRemove: [19]
+  rowsToRemove: []
 };
 
 const getBlockStringIndex = ({ x, y, rotation }) => {
@@ -96,7 +96,12 @@ const getters = {
     };
   },
   shouldRemoveRow: state => y => {
+    if (y >= GRID_SIZE.height) {
+      return false;
+    }
+
     for (let x = 0; x < GRID_SIZE.width; x++) {
+      //console.log("?", state.grid[y=);
       if (state.grid[y][x] === EMPTY) {
         return false;
       }
@@ -116,6 +121,11 @@ const actions = {
     if (!getters.isValidMove({ x, y: y + 2, rotation })) {
       commit("copyBlockToGrid", { x, y: y + 1, block });
       commit("createNewBlock");
+      for (let blockY = 0; blockY < BLOCK_SIZE.height; blockY++) {
+        if (getters.shouldRemoveRow(y + blockY)) {
+          commit("markRowToRemove", y + blockY);
+        }
+      }
     }
   },
   moveBlock({ commit, getters }, { xOffset = 0, yOffset = 0 }) {
@@ -174,6 +184,9 @@ const mutations = {
     }
 
     state.grid = grid;
+  },
+  markRowToRemove(state, y) {
+    state.rowsToRemove = [...state.rowsToRemove, y];
   }
 };
 
