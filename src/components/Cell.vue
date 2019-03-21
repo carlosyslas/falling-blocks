@@ -12,7 +12,6 @@ export default {
       return {
         [`color-${this.value}`]: true,
         filled: this.value != EMPTY,
-        animated: this.value === "T",
         "to-remove": this.toRemove && this.value !== WALL
       };
     },
@@ -31,11 +30,18 @@ export default {
   width: 20px;
   height: 20px;
   box-sizing: border-box;
+  border-radius: 2px;
+  box-shadow: -1px -1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    1px 1px 0 0 rgba(0, 0, 0, 0.05) inset,
+    -2px -2px 3px 0px rgba(255, 255, 255, 0.02) inset,
+    2px 2px 3px 0px rgba(0, 0, 0, 0.02) inset;
 }
 
 .filled {
-  box-shadow: 2px 2px 0 0 rgba(255, 255, 255, 0.4) inset,
-    -2px -2px 0 0 rgba(0, 0, 0, 0.4) inset;
+  box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.4) inset,
+    -1px -1px 0 0 rgba(0, 0, 0, 0.4) inset,
+    2px 2px 3px 0px rgba(255, 255, 255, 0.1) inset,
+    -2px -2px 3px 0px rgba(0, 0, 0, 0.1) inset;
 }
 
 .color-I {
@@ -62,27 +68,6 @@ export default {
 
 .color-wall {
   background: #808080;
-}
-
-.animated {
-  animation: elastic 1s;
-}
-
-@keyframes elastic {
-  0% {
-    border-radius: 0;
-    transform: scale(1) translate(0, 0);
-  }
-
-  50% {
-    border-radius: 6px;
-    transform: scale(1.2, 0.8) translate(0, 4px);
-  }
-
-  100% {
-    border-radius: 0;
-    transform: scale(1) translate(0, 0);
-  }
 }
 
 .to-remove {
