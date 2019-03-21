@@ -36,6 +36,6 @@ export default {
 .grid {
   display: flex;
   flex-direction: column;
-  background: #333;
+  width: 280px;
 }
 </style>

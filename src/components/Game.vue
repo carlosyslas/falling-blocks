@@ -1,13 +1,17 @@
 <template>
   <div>
-    <Grid v-bind:rows="grid" v-bind:to-remove="rowsToRemove"/>
-    <div>{{score}}</div>
-    <div v-if="isRunning && !isFirstGame">Game over</div>
+    <div class="layout">
+      <Grid v-bind:rows="grid" v-bind:to-remove="rowsToRemove"/>
+      <Score v-bind:value="score"/>
+    </div>
+    <div v-if="!isRunning && !isFirstGame">Game over</div>
+    <div v-if="isRunning && !isFirstGame">Press any key...</div>
   </div>
 </template>
 
 <script>
 import Grid from "./Grid";
+import Score from "./Score";
 import { KEY_CODE } from "../constants";
 import { mapGetters, mapActions } from "vuex";
 
@@ -20,7 +24,6 @@ export default {
   methods: {
     ...mapActions(["fallBlock", "moveBlock", "rotateBlock"]),
     keydown(e) {
-      console.log("que loco!", { ...this.currentPiece }, e);
       switch (e.keyCode) {
         case KEY_CODE.up: {
           this.rotateBlock();
@@ -77,7 +80,8 @@ export default {
     "isFirstGame"
   ]),
   components: {
-    Grid
+    Grid,
+    Score
   },
   created() {
     window.addEventListener("keydown", this.keydown);
@@ -89,5 +93,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.layout {
+  display: flex;
+}
 </style>

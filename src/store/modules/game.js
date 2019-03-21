@@ -3,7 +3,8 @@ import {
   BLOCK,
   GRID_SIZE,
   EMPTY,
-  INITIAL_SPEED
+  INITIAL_SPEED,
+  SCORE_INCREMENTS
 } from "../../constants";
 
 const state = {
@@ -135,9 +136,10 @@ const actions = {
     dispatch("moveBlock", { yOffset: 1 });
   },
   moveBlock({ commit, getters }, { xOffset = 0, yOffset = 0 }) {
-    const { x, y, rotation, block } = getters;
+    const { x, y, rotation, block, rowsToRemove } = getters;
 
     commit("removeFullRows");
+    commit("increaseScore", SCORE_INCREMENTS[rowsToRemove.length]);
 
     if (xOffset !== 0 && getters.isValidMove({ x: x + xOffset, y, rotation })) {
       commit("setBlockX", x + xOffset);
@@ -220,13 +222,19 @@ const mutations = {
   // TODO: rename this, since it's not a speed but a "tick" duration.
   decreaseSpeed(state) {
     if (state.speed > 10) {
-      state.speed -= 10;
+      state.speed *= 0.97;
     }
   },
   gameOver(state) {
     state.isRunning = false;
     state.isFirstGame = false;
     state.speed = INITIAL_SPEED;
+    state.grid = Array.from(Array(GRID_SIZE.height)).map(() =>
+      Array.from(Array(GRID_SIZE.width)).map(EMPTY)
+    );
+  },
+  increaseScore(state, increment) {
+    state.score += increment;
   }
 };
 

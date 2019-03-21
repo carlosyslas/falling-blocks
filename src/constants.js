@@ -47,6 +47,8 @@ export const BLOCK = {
 export const EMPTY = " ";
 export const WALL = "wall";
 
+export const SCORE_INCREMENTS = [0, 40, 100, 300, 1200];
+
 export const INITIAL_SPEED = 500;
 
 export const BLOCK_SIZE = {
