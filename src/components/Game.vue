@@ -42,6 +42,10 @@ export default {
       }
     },
     tick(timestamp) {
+      if (!this.isRunning) {
+        return;
+      }
+
       if (!this.lastTimestamp) {
         this.lastTimestamp = timestamp;
         requestAnimationFrame(this.tick);
@@ -63,7 +67,7 @@ export default {
       requestAnimationFrame(this.tick);
     }
   },
-  computed: mapGetters(["grid", "rowsToRemove", "score", "speed"]),
+  computed: mapGetters(["grid", "rowsToRemove", "score", "speed", "isRunning"]),
   components: {
     Grid
   },

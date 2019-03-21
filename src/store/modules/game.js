@@ -2,9 +2,9 @@ import { BLOCK_SIZE, BLOCK, GRID_SIZE, EMPTY } from "../../constants";
 
 const state = {
   block: {
-    name: "L",
-    x: 0,
-    y: 0,
+    name: Object.keys(BLOCK)[Math.floor(Math.random() * 7)],
+    x: GRID_SIZE.width / 2 - BLOCK_SIZE.width / 2,
+    y: -1,
     rotation: 0
   },
   grid: Array.from(Array(GRID_SIZE.height)).map(() =>
@@ -12,7 +12,7 @@ const state = {
   ),
   rowsToRemove: [],
   isFirstGame: true,
-  isGameRunning: false,
+  isGameRunning: true,
   score: 0,
   speed: 500
 };
@@ -46,7 +46,12 @@ const getters = {
 
     for (let y = 0; y < BLOCK_SIZE.height; y++) {
       for (let x = 0; x < BLOCK_SIZE.width; x++) {
-        if (x + xOffset < GRID_SIZE.width && y + yOffset < GRID_SIZE.height) {
+        if (
+          x + xOffset < GRID_SIZE.width &&
+          y + yOffset < GRID_SIZE.height &&
+          x + xOffset >= 0 &&
+          y + yOffset >= 0
+        ) {
           if (block[y][x] === EMPTY) {
             continue;
           }
@@ -170,8 +175,8 @@ const mutations = {
     state.block.rotation = newRotation;
   },
   createNewBlock(state) {
-    state.block.x = 4;
-    state.block.y = 0;
+    state.block.x = GRID_SIZE.width / 2 - BLOCK_SIZE.width / 2;
+    state.block.y = -1;
     state.block.rotation = 0;
     state.block.name = Object.keys(BLOCK)[Math.floor(Math.random() * 7)];
   },
