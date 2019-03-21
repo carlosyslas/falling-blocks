@@ -19,7 +19,7 @@ const state = {
   ),
   rowsToRemove: [],
   isFirstGame: true,
-  isGameRunning: true,
+  isGameRunning: false,
   score: 0,
   speed: INITIAL_SPEED
 };
@@ -88,8 +88,7 @@ const getters = {
   isValidMove: (state, getters) => {
     const { name } = state.block;
 
-    // TODO: rename xOffset to xGrid
-    return ({ x: xOffset = 0, y: yOffset = 0, rotation = 0 }) => {
+    return ({ x: xGrid = 0, y: yGrid = 0, rotation = 0 }) => {
       for (let y = 0; y < 4; y++) {
         for (let x = 0; x < 4; x++) {
           const index = getBlockStringIndex({ y, x, rotation });
@@ -97,16 +96,16 @@ const getters = {
             continue;
           }
 
-          if (x + xOffset < 0) {
+          if (x + xGrid < 0) {
             return false;
           }
-          if (x + xOffset > GRID_SIZE.width - 1) {
+          if (x + xGrid > GRID_SIZE.width - 1) {
             return false;
           }
-          if (y + yOffset > GRID_SIZE.height - 1) {
+          if (y + yGrid > GRID_SIZE.height - 1) {
             return false;
           }
-          if (state.grid[y + yOffset][x + xOffset] !== EMPTY) {
+          if (state.grid[y + yGrid][x + xGrid] !== EMPTY) {
             return false;
           }
         }
@@ -128,7 +127,20 @@ const getters = {
     }
     return true;
   },
-  rowsToRemove: state => state.rowsToRemove
+  rowsToRemove: state => state.rowsToRemove,
+  firstFilledCellYPosition: state => {
+    const { name, rotation } = state.block;
+
+    for (let y = 0; y < BLOCK_SIZE.height; y++) {
+      for (let x = 0; x < BLOCK_SIZE.width; x++) {
+        const index = getBlockStringIndex({ y, x, rotation });
+        if (BLOCK[name][index] !== EMPTY) {
+          return y + state.block.y;
+        }
+      }
+    }
+    return 0;
+  }
 };
 
 const actions = {
@@ -145,21 +157,21 @@ const actions = {
       commit("setBlockX", x + xOffset);
     } else if (getters.isValidMove({ x, y: y + yOffset, rotation })) {
       commit("setBlockY", y + yOffset);
+    }
 
-      if (!getters.isValidMove({ x, y: y + yOffset + 1, rotation })) {
-        commit("copyBlockToGrid", { x, y: y + yOffset, block });
+    if (!getters.isValidMove({ x, y: y + yOffset + 1, rotation })) {
+      commit("copyBlockToGrid", { x, y: y + yOffset, block });
 
-        if (y <= 0) {
-          commit("gameOver");
-          return;
-        }
+      if (getters.firstFilledCellYPosition <= 0) {
+        commit("gameOver");
+        return;
+      }
 
-        commit("createNewBlock");
-        commit("decreaseSpeed");
-        for (let blockY = 0; blockY < BLOCK_SIZE.height; blockY++) {
-          if (getters.shouldRemoveRow(y + blockY + 1)) {
-            commit("markRowToRemove", y + blockY + 1);
-          }
+      commit("createNewBlock");
+      commit("decreaseSpeed");
+      for (let blockY = 0; blockY < BLOCK_SIZE.height; blockY++) {
+        if (getters.shouldRemoveRow(y + blockY + 1)) {
+          commit("markRowToRemove", y + blockY + 1);
         }
       }
     }
@@ -175,6 +187,11 @@ const actions = {
     if (getters.isValidMove({ x, y, rotation: newRotation })) {
       commit("setBlockRotation", newRotation);
     }
+    // TODO reuse logic from moveBlock
+  },
+  startNewGame({ commit }) {
+    commit("createNewGrid");
+    commit("createNewBlock");
   }
 };
 
@@ -226,15 +243,19 @@ const mutations = {
     }
   },
   gameOver(state) {
-    state.isRunning = false;
+    state.isGameRunning = false;
     state.isFirstGame = false;
-    state.speed = INITIAL_SPEED;
-    state.grid = Array.from(Array(GRID_SIZE.height)).map(() =>
-      Array.from(Array(GRID_SIZE.width)).map(EMPTY)
-    );
   },
   increaseScore(state, increment) {
     state.score += increment;
+  },
+  createNewGrid(state) {
+    state.speed = INITIAL_SPEED;
+    state.score = 0;
+    state.grid = Array.from(Array(GRID_SIZE.height)).map(() =>
+      Array.from(Array(GRID_SIZE.width)).map(() => EMPTY)
+    );
+    state.isGameRunning = true;
   }
 };
 

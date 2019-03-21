@@ -1,13 +1,21 @@
 <template>
-  <div class="score">
+  <div class="score" v-bind:class="className">
     <div>Score</div>
-    <div>{{value}}</div>
+    <div>{{score}}</div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  props: ["value"]
+  computed: {
+    ...mapGetters(["score", "isRunning"]),
+    className() {
+      return {
+        blur: !this.isRunning
+      };
+    }
+  }
 };
 </script>
 
@@ -15,5 +23,10 @@ export default {
 .score {
   padding: 20px 40px;
   font-size: 20px;
+  transition: 0.3s;
+}
+
+.blur {
+  filter: opacity(0.5) blur(2px);
 }
 </style>
