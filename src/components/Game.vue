@@ -1,6 +1,7 @@
 <template>
   <div>
     <Grid v-bind:rows="grid" v-bind:to-remove="rowsToRemove"/>
+    <div>{{score}}</div>
   </div>
 </template>
 
@@ -12,9 +13,8 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data: () => ({
     lastTimestamp: null,
-    tickCounter: 0,
+    tickCounter: 0
     // TODO: move spped to vuex state to increase difficulty.
-    speed: 500
   }),
   methods: {
     ...mapActions(["fallBlock", "moveBlock", "rotateBlock"]),
@@ -63,7 +63,7 @@ export default {
       requestAnimationFrame(this.tick);
     }
   },
-  computed: mapGetters(["grid", "rowsToRemove"]),
+  computed: mapGetters(["grid", "rowsToRemove", "score", "speed"]),
   components: {
     Grid
   },

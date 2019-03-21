@@ -10,7 +10,11 @@ const state = {
   grid: Array.from(Array(GRID_SIZE.height)).map(() =>
     Array.from(Array(GRID_SIZE.width)).map(() => EMPTY)
   ),
-  rowsToRemove: []
+  rowsToRemove: [],
+  isFirstGame: true,
+  isGameRunning: false,
+  score: 0,
+  speed: 500
 };
 
 const getBlockStringIndex = ({ x, y, rotation }) => {
@@ -31,6 +35,10 @@ const getters = {
   x: state => state.block.x,
   y: state => state.block.y,
   rotation: state => state.block.rotation,
+  isRunning: state => state.isGameRunning,
+  isFirstGame: state => state.isFirstGame,
+  score: state => state.score,
+  speed: state => state.speed,
   grid: (state, getters) => {
     const grid = state.grid.slice().map(row => row.slice());
     const block = getters.block;
@@ -112,35 +120,28 @@ const getters = {
 };
 
 const actions = {
-  fallBlock({ commit, getters }) {
+  fallBlock({ dispatch }) {
+    dispatch("moveBlock", { yOffset: 1 });
+  },
+  moveBlock({ commit, getters }, { xOffset = 0, yOffset = 0 }) {
     const { x, y, rotation, block } = getters;
 
     commit("removeFullRows");
 
-    if (getters.isValidMove({ x, y: y + 1, rotation })) {
-      commit("setBlockY", y + 1);
-    }
-    if (!getters.isValidMove({ x, y: y + 2, rotation })) {
-      commit("copyBlockToGrid", { x, y: y + 1, block });
-      commit("createNewBlock");
-      for (let blockY = 0; blockY < BLOCK_SIZE.height; blockY++) {
-        if (getters.shouldRemoveRow(y + blockY + 1)) {
-          commit("markRowToRemove", y + blockY + 1);
-        }
-      }
-    }
-  },
-  moveBlock({ commit, getters }, { xOffset = 0, yOffset = 0 }) {
-    const { x, y, rotation, block } = getters;
     if (xOffset !== 0 && getters.isValidMove({ x: x + xOffset, y, rotation })) {
       commit("setBlockX", x + xOffset);
     } else if (getters.isValidMove({ x, y: y + yOffset, rotation })) {
       commit("setBlockY", y + yOffset);
 
-      // TODO: extract this
-      if (!getters.isValidMove({ x, y: y + 2, rotation })) {
-        commit("copyBlockToGrid", { x, y: y + 1, block });
+      if (!getters.isValidMove({ x, y: y + yOffset + 1, rotation })) {
+        commit("copyBlockToGrid", { x, y: y + yOffset, block });
         commit("createNewBlock");
+        commit("decreaseSpeed");
+        for (let blockY = 0; blockY < BLOCK_SIZE.height; blockY++) {
+          if (getters.shouldRemoveRow(y + blockY + 1)) {
+            commit("markRowToRemove", y + blockY + 1);
+          }
+        }
       }
     }
   },
@@ -198,6 +199,12 @@ const mutations = {
     });
 
     state.rowsToRemove = [];
+  },
+  // TODO: rename this, since it's not a speed but a "tick" duration.
+  decreaseSpeed(state) {
+    if (state.speed > 10) {
+      state.speed -= 10;
+    }
   }
 };
 
