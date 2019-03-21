@@ -115,6 +115,8 @@ const actions = {
   fallBlock({ commit, getters }) {
     const { x, y, rotation, block } = getters;
 
+    commit("removeFullRows");
+
     if (getters.isValidMove({ x, y: y + 1, rotation })) {
       commit("setBlockY", y + 1);
     }
@@ -122,8 +124,8 @@ const actions = {
       commit("copyBlockToGrid", { x, y: y + 1, block });
       commit("createNewBlock");
       for (let blockY = 0; blockY < BLOCK_SIZE.height; blockY++) {
-        if (getters.shouldRemoveRow(y + blockY)) {
-          commit("markRowToRemove", y + blockY);
+        if (getters.shouldRemoveRow(y + blockY + 1)) {
+          commit("markRowToRemove", y + blockY + 1);
         }
       }
     }
@@ -187,6 +189,15 @@ const mutations = {
   },
   markRowToRemove(state, y) {
     state.rowsToRemove = [...state.rowsToRemove, y];
+  },
+  removeFullRows(state) {
+    state.rowsToRemove.forEach(yStart => {
+      for (let y = yStart; y > 1; y--) {
+        state.grid[y] = state.grid[y - 1];
+      }
+    });
+
+    state.rowsToRemove = [];
   }
 };
 
