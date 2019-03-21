@@ -27,4 +27,4 @@ Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
 ## See it running
 
-Got to [https://carlosyslas.com/falling-blocks](https://carlosyslas.com/falling-blocks).
+Got to [https://carlosyslas.com/falling-blocks/](https://carlosyslas.com/falling-blocks/).
