@@ -1,4 +1,10 @@
-import { BLOCK_SIZE, BLOCK, GRID_SIZE, EMPTY } from "../../constants";
+import {
+  BLOCK_SIZE,
+  BLOCK,
+  GRID_SIZE,
+  EMPTY,
+  INITIAL_SPEED
+} from "../../constants";
 
 const state = {
   block: {
@@ -14,7 +20,7 @@ const state = {
   isFirstGame: true,
   isGameRunning: true,
   score: 0,
-  speed: 500
+  speed: INITIAL_SPEED
 };
 
 const getBlockStringIndex = ({ x, y, rotation }) => {
@@ -140,6 +146,12 @@ const actions = {
 
       if (!getters.isValidMove({ x, y: y + yOffset + 1, rotation })) {
         commit("copyBlockToGrid", { x, y: y + yOffset, block });
+
+        if (y <= 0) {
+          commit("gameOver");
+          return;
+        }
+
         commit("createNewBlock");
         commit("decreaseSpeed");
         for (let blockY = 0; blockY < BLOCK_SIZE.height; blockY++) {
@@ -210,6 +222,11 @@ const mutations = {
     if (state.speed > 10) {
       state.speed -= 10;
     }
+  },
+  gameOver(state) {
+    state.isRunning = false;
+    state.isFirstGame = false;
+    state.speed = INITIAL_SPEED;
   }
 };
 

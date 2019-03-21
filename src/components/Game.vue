@@ -2,6 +2,7 @@
   <div>
     <Grid v-bind:rows="grid" v-bind:to-remove="rowsToRemove"/>
     <div>{{score}}</div>
+    <div v-if="isRunning && !isFirstGame">Game over</div>
   </div>
 </template>
 
@@ -67,7 +68,14 @@ export default {
       requestAnimationFrame(this.tick);
     }
   },
-  computed: mapGetters(["grid", "rowsToRemove", "score", "speed", "isRunning"]),
+  computed: mapGetters([
+    "grid",
+    "rowsToRemove",
+    "score",
+    "speed",
+    "isRunning",
+    "isFirstGame"
+  ]),
   components: {
     Grid
   },

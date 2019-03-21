@@ -47,6 +47,8 @@ export const BLOCK = {
 export const EMPTY = " ";
 export const WALL = "wall";
 
+export const INITIAL_SPEED = 500;
+
 export const BLOCK_SIZE = {
   width: 4,
   height: 4
