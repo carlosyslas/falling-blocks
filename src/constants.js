@@ -19,15 +19,15 @@ export const BLOCK = {
     "    "
   ].join(""),
   J: [
+    "    ", 
     "J   ", 
     "JJJ ", 
-    "    ", 
     "    "
   ].join(""),
   L: [
+    "    ", 
     "   L", 
     " LLL", 
-    "    ", 
     "    "
   ].join(""),
   S: [
@@ -61,5 +61,6 @@ export const KEY_CODE = {
   left: 37,
   up: 38,
   right: 39,
-  down: 40
+  down: 40,
+  space: 32
 };

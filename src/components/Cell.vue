@@ -39,7 +39,7 @@ export default {
 }
 
 .color-I {
-  background: #556270;
+  background: #c0b9dd;
 }
 .color-O {
   background: #4ecdc4;
@@ -61,7 +61,7 @@ export default {
 }
 
 .color-wall {
-  background: #ddd;
+  background: #808080;
 }
 
 .animated {
